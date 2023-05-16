@@ -127,11 +127,13 @@ def get_credentials():
     return creds
 
 
-def get_entry_details(n_days=1):
+def get_entry_details(label_name: str, n_days=1):
     """
 
     Parameters
     ----------
+     label_name : str
+        Label from which to extract messages
      n_days : int
         Get entry details for all the emails received within last n days
 
@@ -142,7 +144,6 @@ def get_entry_details(n_days=1):
     """
 
     all_entry_detais: list = []
-    test_label_name: str = "Test, using quora"
     custom_filter = get_after_date_filter(n_days)
 
     # Get credentials for authentication
@@ -151,10 +152,10 @@ def get_entry_details(n_days=1):
     service = build('gmail', 'v1', credentials=creds)
     gmail_reader = GmailReader(service)
 
-    # Getting test label id
-    test_label_id = gmail_reader.get_label_id(test_label_name)
-    # Getting all message resources under test label
-    message_resources: list[dict] = gmail_reader.get_msg_resources_under_label(test_label_id, custom_filter)
+    # Getting label id
+    label_id = gmail_reader.get_label_id(label_name)
+    # Getting all message resources under label
+    message_resources: list[dict] = gmail_reader.get_msg_resources_under_label(label_id, custom_filter)
 
     if message_resources is None:
         print(f"No Form Entry Emails in last {n_days} days")
@@ -178,4 +179,4 @@ def get_entry_details(n_days=1):
 
 
 if __name__ == '__main__':
-    print(get_entry_details(1))
+    print(get_entry_details("Form entries", 2))
