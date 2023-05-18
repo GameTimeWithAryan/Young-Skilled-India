@@ -1,0 +1,4 @@
+from excel_writer import update_excel_workbook
+from form_entry_extractor import get_all_form_entries
+
+update_excel_workbook(get_all_form_entries())
