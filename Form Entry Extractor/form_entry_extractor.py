@@ -13,6 +13,7 @@ Algorithm for getting name, email, phone number, city:
 """
 
 from email_data_fetcher import yield_email_data
+from config import logger
 
 
 def parse_content(content: str):
@@ -45,9 +46,10 @@ def get_all_form_entries():
     all_email_data = yield_email_data()
 
     # Getting message content of each message resource
-    for content, msg_creation_date in all_email_data:
+    for index, (content, msg_creation_date) in enumerate(all_email_data):
         # Parsing content of each message
         entry_details = parse_content(content)
+        logger.info(f"[PARSED] Message {index + 1} Parsed")
         all_entry_detais.append((entry_details, msg_creation_date))
 
     # Reversing to make the entries in ascending order of their sent dates

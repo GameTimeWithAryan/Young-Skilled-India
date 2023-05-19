@@ -6,7 +6,7 @@ Maintains excel sheet of all form entries
 Updates all the entry details from emails of forms in the excel sheets
 """
 
-from config import EMAIL_COLUMN, DATE_COLUMN, ENTRY_FIELD_COLUMNS, OUTPUT_FILE
+from config import EMAIL_COLUMN, DATE_COLUMN, ENTRY_FIELD_COLUMNS, OUTPUT_FILE, logger
 
 from openpyxl import load_workbook
 from openpyxl.worksheet.worksheet import Worksheet
@@ -15,6 +15,9 @@ from openpyxl.worksheet.worksheet import Worksheet
 workbook = load_workbook(OUTPUT_FILE)
 worksheet: Worksheet = workbook.worksheets[0]
 empty_row_start = worksheet.max_row + 1
+
+logger.debug(f"[WORKBOOK LOADED] Last Column in Worksheet: {worksheet.max_column}")
+logger.debug(f"[WORKBOOK LOADED] Last Row in Worksheet: {worksheet.max_row}")
 
 
 def get_worksheet_emails():
@@ -45,5 +48,7 @@ def update_excel_workbook(email_form_entries: list):
             worksheet[cell_coordinate] = entry[0][field_index]
         date_cell_coordinate = f"{DATE_COLUMN}{excel_row}"
         worksheet[date_cell_coordinate] = entry[1]
-
+        logger.info(f"[EXCEL WRITER] Message {updation_starting_index + entry_index} Written")
     workbook.save(filename=OUTPUT_FILE)
+    number_of_entries_updated = len(email_form_entries[updation_starting_index:])
+    logger.info(f"[FILE SAVED] {OUTPUT_FILE} Saved with {number_of_entries_updated} new entries")

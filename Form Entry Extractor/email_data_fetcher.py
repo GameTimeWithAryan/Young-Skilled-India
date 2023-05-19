@@ -8,7 +8,7 @@ under a specific label, and then yields its content and its sent time for each
 email
 """
 
-from config import GMAIL_LABEL_NAME, LAST_N_DAYS
+from config import GMAIL_LABEL_NAME, LAST_N_DAYS, logger
 
 import base64
 import quopri
@@ -105,17 +105,20 @@ def yield_email_data(label_name: str = GMAIL_LABEL_NAME, n_days: int = LAST_N_DA
     custom_filter = f"label:{label_name} {get_after_date_filter(n_days)}"
     gmail_reader = GmailReader()
     gmail_reader.initialize_api_caller()
+    logger.info("[CONNECTION] Connected with GMAIL API")
 
     # Getting all message resources in the filter
     message_resources: list[dict] = gmail_reader.get_msg_resources_in_filter(custom_filter)
     if message_resources is None:
         print(f"No Form Entry Emails in last {n_days} days")
         return []
+    logger.info(f"[DATA FETCHED] {len(message_resources)} Message resources fetched")
 
     # Yielding message content and sent date of each message resource
-    for msg_resource in message_resources:
+    for index, msg_resource in enumerate(message_resources):
         # Getting each message
         message_response = gmail_reader.get_msg_from_resource(msg_resource)
+        logger.info(f"[DATA FETCHED] Message {index + 1} Fetched")
         # Extracting content of message, encoded in base64 and quoted printable text encoding
         encoded_message_content: str = message_response.get("payload").get("parts")[0].get("body").get("data")
         # Decoding message content
@@ -123,6 +126,7 @@ def yield_email_data(label_name: str = GMAIL_LABEL_NAME, n_days: int = LAST_N_DA
         # Extracting creation date of message from message_response
         msg_creation_date = get_msg_creation_date(message_response)
 
+        logger.info(f"[YIELDING DATA] Yeilding Content and Date of Message {index + 1}")
         yield decoded_message_content, msg_creation_date
 
 
