@@ -40,10 +40,11 @@ index of where to start from in the list of entries fetched online
 
 ## Experience from working on this project
 
-(*) Accessing Gmail using imaplib works with google account password only when less secure
-apps are enabled
-imap = imaplib.IMAP4_SSL(imap_server)
-imap.login(email_address, password)
+Accessing Gmail using imaplib also works with app passwords... But when this was found out by
+me, it was just too late to change anything and everything is working fine
+
+imap = imaplib.IMAP4_SSL("imap.gmail.com")
+imap.login(email_address, app_password)
 
 ## Which type of emails does it work with?
 
