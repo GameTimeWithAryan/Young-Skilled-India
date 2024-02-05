@@ -3,7 +3,7 @@ from logging import getLogger, Formatter, StreamHandler, INFO
 
 # Excel data extraction
 certificate_data_file: str = "certificate_data.xlsx"  # Certificates data filename
-starting_row_index: int = 2  # row index from which to start
+starting_row_index: int = 1  # row index from which to start
 column_range: tuple[int, int] = (1, 4)  # columns indices to extract data from
 
 # Email message content
